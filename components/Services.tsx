@@ -1,103 +1,33 @@
-import {
-  Palette,
-  Printer,
-  PanelTop,
-  Car,
-  Globe,
-  Camera,
-  BookOpen,
-  Megaphone,
-} from "lucide-react";
+import { Palette, Printer, PanelTop, Car, Megaphone, Globe } from "lucide-react";
 
 const services = [
-  {
-    icon: Palette,
-    title: "Grafisk design",
-    description:
-      "Logo, visuell identitet, profileringsmanualer og illustrasjoner. Vi skaper helhetlig design som styrker merkevaren din.",
-  },
-  {
-    icon: Printer,
-    title: "Trykksaker",
-    description:
-      "Brosjyrer, magasiner, bøker, kalendere og kontortrykksaker. Eget offset- og digitaltrykkeri med fargestyringssertifisering.",
-  },
-  {
-    icon: PanelTop,
-    title: "Skilt og dekor",
-    description:
-      "Fasadeskilt, vindusfoliering, innendørs dekor og ARKEOPLAN® kulturskilt. Produksjon og montering i hele regionen.",
-  },
-  {
-    icon: Car,
-    title: "Bilfoliering",
-    description:
-      "Helfoliering og delfoliering av firmabiler. Gjør kjøretøyene til rullende reklame for bedriften din.",
-  },
-  {
-    icon: Megaphone,
-    title: "Profilering og markedsmateriell",
-    description:
-      "Messemateriell, roll-ups, beachflagg og profileringsartikler. Alt du trenger for å synes på messer og events.",
-  },
-  {
-    icon: Globe,
-    title: "Nettsider",
-    description:
-      "Moderne, brukervennlige nettsider med fokus på konvertering. Også via vår egen plattform Steinbyggeren.",
-  },
-  {
-    icon: Camera,
-    title: "Foto, video og illustrasjon",
-    description:
-      "Profesjonell foto og film til markedsføring, samt skreddersydde illustrasjoner og infografikk.",
-  },
-  {
-    icon: BookOpen,
-    title: "Markedsføring",
-    description:
-      "Kampanjer, annonsering og markedsstrategi. Vi hjelper deg fra idé til gjennomføring — en komplett markedspartner.",
-  },
+  { icon: Palette, title: "Design og identitet", text: "Logo, profil og visuelt uttrykk som skiller deg ut." },
+  { icon: Printer, title: "Trykk", text: "Brosjyrer, kataloger, bøker — eget trykkeri, full kontroll." },
+  { icon: PanelTop, title: "Skilt og dekor", text: "Fasadeskilt, vindusfolie og innendørs profilering." },
+  { icon: Car, title: "Bilfoliering", text: "Firmabilene dine blir rullende reklame." },
+  { icon: Megaphone, title: "Profilering", text: "Messemateriell, roll-ups og alt som gjør deg synlig." },
+  { icon: Globe, title: "Nettsider", text: "Moderne nettsider som konverterer besøk til kunder." },
 ];
 
 export default function Services() {
   return (
-    <section id="tjenester" className="py-20 bg-muted">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl sm:text-4xl font-bold text-foreground">
-            Alt din bedrift trenger — under ett tak
-          </h2>
-          <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
-            Som totalleverandør håndterer vi hele prosessen fra design til
-            ferdig produkt, med eget trykkeri og produksjon lokalt.
-          </p>
-        </div>
+    <section id="tjenester" className="py-20">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6">
+        <h2 className="text-2xl sm:text-3xl font-bold text-foreground text-center">
+          Alt du trenger for å bygge merkevare
+        </h2>
+        <p className="mt-3 text-muted-foreground text-center max-w-xl mx-auto">
+          Én leverandør, ingen mellomhender, raskere leveranse.
+        </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {services.map((service) => (
-            <div
-              key={service.title}
-              className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow border border-border group"
-            >
-              <service.icon className="w-10 h-10 text-accent mb-4 group-hover:scale-110 transition-transform" />
-              <h3 className="text-lg font-semibold text-foreground mb-2">
-                {service.title}
-              </h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                {service.description}
-              </p>
+        <div className="mt-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {services.map((s) => (
+            <div key={s.title} className="bg-muted rounded-xl p-6 border border-border hover:border-primary/20 transition-colors">
+              <s.icon className="w-8 h-8 text-accent mb-3" />
+              <h3 className="font-semibold text-foreground">{s.title}</h3>
+              <p className="text-sm text-muted-foreground mt-1">{s.text}</p>
             </div>
           ))}
-        </div>
-
-        <div className="mt-12 text-center">
-          <a
-            href="#kontakt"
-            className="inline-flex items-center gap-2 bg-primary hover:bg-primary-light text-white font-semibold px-8 py-4 rounded-lg transition-colors"
-          >
-            Snakk med oss om ditt prosjekt
-          </a>
         </div>
       </div>
     </section>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Phone } from "lucide-react";
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -15,14 +15,21 @@ export default function Header() {
           </a>
 
           <nav className="hidden md:flex items-center gap-8">
-            <a href="#servicios" className="text-sm font-medium text-foreground/70 hover:text-primary transition-colors">
-              Servicios
+            <a href="#tjenester" className="text-sm font-medium text-foreground/70 hover:text-primary transition-colors">
+              Tjenester
             </a>
-            <a href="#nosotros" className="text-sm font-medium text-foreground/70 hover:text-primary transition-colors">
-              Nosotros
+            <a href="#om-oss" className="text-sm font-medium text-foreground/70 hover:text-primary transition-colors">
+              Om oss
             </a>
-            <a href="#contacto" className="bg-accent hover:bg-accent-hover text-white font-semibold px-6 py-2.5 rounded-lg transition-colors text-sm">
-              Pedir Presupuesto
+            <a href="#kontakt" className="text-sm font-medium text-foreground/70 hover:text-primary transition-colors">
+              Kontakt
+            </a>
+            <a href="tel:+4771202970" className="hidden lg:flex items-center gap-2 text-sm font-medium text-muted-foreground">
+              <Phone className="w-4 h-4" />
+              71 20 29 70
+            </a>
+            <a href="#kontakt" className="bg-accent hover:bg-accent-hover text-white font-semibold px-6 py-2.5 rounded-lg transition-colors text-sm">
+              Få tilbud
             </a>
           </nav>
 
@@ -38,14 +45,20 @@ export default function Header() {
 
       {menuOpen && (
         <div className="md:hidden bg-white border-t border-border px-4 py-4 space-y-3">
-          <a href="#servicios" onClick={() => setMenuOpen(false)} className="block text-sm font-medium text-foreground/70">
-            Servicios
+          <a href="#tjenester" onClick={() => setMenuOpen(false)} className="block text-sm font-medium text-foreground/70">
+            Tjenester
           </a>
-          <a href="#nosotros" onClick={() => setMenuOpen(false)} className="block text-sm font-medium text-foreground/70">
-            Nosotros
+          <a href="#om-oss" onClick={() => setMenuOpen(false)} className="block text-sm font-medium text-foreground/70">
+            Om oss
           </a>
-          <a href="#contacto" onClick={() => setMenuOpen(false)} className="block bg-accent text-white font-semibold px-6 py-2.5 rounded-lg text-sm text-center">
-            Pedir Presupuesto
+          <a href="#kontakt" onClick={() => setMenuOpen(false)} className="block text-sm font-medium text-foreground/70">
+            Kontakt
+          </a>
+          <a href="tel:+4771202970" className="block text-sm font-medium text-muted-foreground">
+            71 20 29 70
+          </a>
+          <a href="#kontakt" onClick={() => setMenuOpen(false)} className="block bg-accent text-white font-semibold px-6 py-2.5 rounded-lg text-sm text-center">
+            Få tilbud
           </a>
         </div>
       )}

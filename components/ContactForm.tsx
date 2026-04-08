@@ -37,7 +37,7 @@ export default function ContactForm() {
       <section id="kontakt" className="py-20 bg-muted">
         <div className="max-w-lg mx-auto px-4 text-center">
           <div className="bg-white rounded-2xl p-12 shadow-sm border border-border">
-            <div className="w-12 h-12 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto text-xl font-bold">&#10003;</div>
+            <div className="w-12 h-12 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto text-xl font-bold">&#10003;</div>
             <h3 className="mt-4 text-xl font-bold text-foreground">Mottatt!</h3>
             <p className="mt-2 text-muted-foreground">Vi tar kontakt innen kort tid.</p>
             <button onClick={() => setStatus("idle")} className="mt-6 text-primary text-sm font-medium hover:underline">
@@ -111,7 +111,7 @@ export default function ContactForm() {
           <button
             type="submit"
             disabled={status === "sending"}
-            className="w-full bg-accent hover:bg-accent-hover disabled:opacity-50 text-white font-semibold py-3.5 rounded-lg transition-colors flex items-center justify-center gap-2"
+            className="w-full bg-primary hover:bg-primary-dark disabled:opacity-50 text-white font-semibold py-3.5 rounded-lg transition-colors flex items-center justify-center gap-2"
           >
             {status === "sending" ? (
               <><Loader2 className="w-4 h-4 animate-spin" /> Sender...</>

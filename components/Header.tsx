@@ -11,14 +11,14 @@ export default function Header() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between h-16">
           <a href="/" className="text-xl font-bold text-primary">
-            EKH <span className="text-accent">Grafisk</span>
+            EKH <span className="text-foreground">Grafisk</span>
           </a>
 
           <nav className="hidden md:flex items-center gap-6">
             <a href="#tjenester" className="text-sm text-foreground/60 hover:text-primary transition-colors">
               Tjenester
             </a>
-            <a href="#kontakt" className="bg-accent hover:bg-accent-hover text-white font-semibold px-5 py-2 rounded-lg transition-colors text-sm">
+            <a href="#kontakt" className="bg-primary hover:bg-primary-dark text-white font-semibold px-5 py-2 rounded-lg transition-colors text-sm">
               Få tilbud
             </a>
           </nav>
@@ -38,7 +38,7 @@ export default function Header() {
           <a href="#tjenester" onClick={() => setMenuOpen(false)} className="block text-sm text-foreground/70">
             Tjenester
           </a>
-          <a href="#kontakt" onClick={() => setMenuOpen(false)} className="block bg-accent text-white font-semibold px-5 py-2 rounded-lg text-sm text-center">
+          <a href="#kontakt" onClick={() => setMenuOpen(false)} className="block bg-primary text-white font-semibold px-5 py-2 rounded-lg text-sm text-center">
             Få tilbud
           </a>
         </div>

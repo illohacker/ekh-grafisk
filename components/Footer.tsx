@@ -1,9 +1,9 @@
 export default function Footer() {
   return (
-    <footer className="bg-primary text-white py-10">
+    <footer className="bg-primary-dark text-white py-10">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-6 text-sm">
         <div>
-          <span className="font-bold text-lg">EKH <span className="text-accent">Grafisk</span></span>
+          <span className="font-bold text-lg">EKH <span className="text-white/80">Grafisk</span></span>
           <span className="hidden sm:inline text-white/40 ml-3">Siden 1898</span>
         </div>
         <div className="flex flex-col sm:flex-row items-center gap-4 text-white/60">

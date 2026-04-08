@@ -1,33 +1,40 @@
-import { Palette, Printer, PanelTop, Car, Megaphone, Globe } from "lucide-react";
+import { Palette, Printer, PanelTop, Truck } from "lucide-react";
 
-const services = [
-  { icon: Palette, title: "Design og identitet", text: "Logo, profil og visuelt uttrykk som skiller deg ut." },
-  { icon: Printer, title: "Trykk", text: "Brosjyrer, kataloger, bøker — eget trykkeri, full kontroll." },
-  { icon: PanelTop, title: "Skilt og dekor", text: "Fasadeskilt, vindusfolie og innendørs profilering." },
-  { icon: Car, title: "Bilfoliering", text: "Firmabilene dine blir rullende reklame." },
-  { icon: Megaphone, title: "Profilering", text: "Messemateriell, roll-ups og alt som gjør deg synlig." },
-  { icon: Globe, title: "Nettsider", text: "Moderne nettsider som konverterer besøk til kunder." },
+const steps = [
+  { icon: Palette, num: "01", title: "Du velger", text: "Fortell oss hvilke produkter og mengder du trenger." },
+  { icon: Palette, num: "02", title: "Vi designer", text: "Vi tilpasser designet med logo og farger — gratis." },
+  { icon: Printer, num: "03", title: "Vi produserer", text: "Alt trykkes og monteres i vårt eget trykkeri." },
+  { icon: Truck, num: "04", title: "Du mottar", text: "Levert til døren, klar til bruk." },
 ];
 
 export default function Services() {
   return (
-    <section id="tjenester" className="py-20">
+    <section id="tjenester" className="py-20 bg-muted">
       <div className="max-w-5xl mx-auto px-4 sm:px-6">
         <h2 className="text-2xl sm:text-3xl font-bold text-foreground text-center">
-          Alt du trenger for å bygge merkevare
+          Så enkelt er det
         </h2>
         <p className="mt-3 text-muted-foreground text-center max-w-xl mx-auto">
-          Én leverandør, ingen mellomhender, raskere leveranse.
+          Fra idé til ferdig produkt — vi tar oss av alt.
         </p>
 
-        <div className="mt-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {services.map((s) => (
-            <div key={s.title} className="bg-muted rounded-xl p-6 border border-border hover:border-primary/30 transition-colors">
-              <s.icon className="w-8 h-8 text-primary mb-3" />
-              <h3 className="font-semibold text-foreground">{s.title}</h3>
+        <div className="mt-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {steps.map((s) => (
+            <div key={s.num} className="relative bg-white rounded-xl p-6 border border-border">
+              <span className="text-4xl font-black text-primary/10">{s.num}</span>
+              <h3 className="mt-2 font-semibold text-foreground text-lg">{s.title}</h3>
               <p className="text-sm text-muted-foreground mt-1">{s.text}</p>
             </div>
           ))}
+        </div>
+
+        <div className="mt-12 text-center">
+          <a
+            href="#kontakt"
+            className="inline-flex items-center gap-2 bg-primary hover:bg-primary-dark text-white font-semibold px-8 py-4 rounded-xl transition-colors text-lg"
+          >
+            Kom i gang — det er gratis å spørre
+          </a>
         </div>
       </div>
     </section>

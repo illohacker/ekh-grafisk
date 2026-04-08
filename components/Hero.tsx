@@ -66,9 +66,6 @@ export default function Hero() {
           </a>
         </div>
 
-        <p className="mt-6 text-sm text-white/40">
-          Ingen minimumsordre · Gratis designhjelp · Levering i hele Norge
-        </p>
       </div>
     </section>
   );

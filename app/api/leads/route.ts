@@ -17,19 +17,28 @@ export async function GET() {
 
 export async function PATCH(request: NextRequest) {
   const body = await request.json();
-  const { id, status } = body;
+  const { id, ...updates } = body;
 
-  if (!id || !status) {
-    return NextResponse.json(
-      { error: "ID and status are required" },
-      { status: 400 }
-    );
+  if (!id) {
+    return NextResponse.json({ error: "ID is required" }, { status: 400 });
   }
+
+  const allowed = ["status", "name", "email", "phone", "company"];
+  const filtered: Record<string, string> = {};
+  for (const key of allowed) {
+    if (key in updates) filtered[key] = updates[key];
+  }
+
+  if (Object.keys(filtered).length === 0) {
+    return NextResponse.json({ error: "No valid fields to update" }, { status: 400 });
+  }
+
+  filtered.updated_at = new Date().toISOString();
 
   const supabase = getSupabase();
   const { error } = await supabase
     .from("leads")
-    .update({ status })
+    .update(filtered)
     .eq("id", id);
 
   if (error) {

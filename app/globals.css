@@ -34,18 +34,3 @@ body {
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
 }
 
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0) rotate(0deg);
-  }
-  33% {
-    transform: translateY(-15px) rotate(3deg);
-  }
-  66% {
-    transform: translateY(-8px) rotate(-2deg);
-  }
-}
-
-.animate-float {
-  animation: float 6s ease-in-out infinite;
-}

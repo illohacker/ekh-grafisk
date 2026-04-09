@@ -4,7 +4,7 @@ import { getSupabase } from "@/lib/supabase";
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { name, email, phone, company, message } = body;
+    const { name, email, phone, company, message, file_url, file_name } = body;
 
     if (!name || !email || !message) {
       return NextResponse.json(
@@ -21,6 +21,8 @@ export async function POST(request: NextRequest) {
       phone: phone || null,
       company: company || null,
       message,
+      file_url: file_url || null,
+      file_name: file_name || null,
       status: "new",
     });
 

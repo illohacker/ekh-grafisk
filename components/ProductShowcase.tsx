@@ -6,17 +6,17 @@ import Image from "next/image";
 const products = [
   {
     name: "Kopper med logo",
-    description: "Hver morgenkaffe — en paminnelse om merkevaren din.",
+    description: "Hver morgenkaffe — en påminnelse om merkevaren din.",
     image: "/images/product-6.jpg",
   },
   {
-    name: "Profileringsartikler",
+    name: "Penner og skrivesaker",
     description: "Den mest delte reklameartikkelen. Alltid i bruk.",
     image: "/images/product-1.jpg",
   },
   {
-    name: "T-skjorter og klaer",
-    description: "Teamet ditt blir et gaende reklameskilt.",
+    name: "T-skjorter og klær",
+    description: "Teamet ditt blir et gående reklameskilt.",
     image: "/images/product-3.jpg",
   },
   {
@@ -25,13 +25,13 @@ const products = [
     image: "/images/product-5.jpg",
   },
   {
-    name: "Notatboker",
-    description: "Kvalitetsfolelse som reflekterer merkevaren.",
+    name: "Notatbøker",
+    description: "Kvalitetsfølelse som reflekterer merkevaren.",
     image: "/images/product-4.jpg",
   },
   {
-    name: "Emballasje og packaging",
-    description: "Forsteinntrykket starter med innpakningen.",
+    name: "Emballasje og innpakning",
+    description: "Førsteinntrykket starter med innpakningen.",
     image: "/images/product-2.jpg",
   },
 ];
@@ -62,15 +62,14 @@ export default function ProductShowcase() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         <div className="text-center mb-14">
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground">
-            Produkter som gjor jobben for deg
+            Produkter som gjør jobben for deg
           </h2>
           <p className="mt-3 text-muted-foreground max-w-lg mx-auto">
-            Hver artikkel er en mulighet til a bli husket.
+            Hver artikkel er en mulighet til å bli husket.
           </p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-          {/* Main featured image */}
           <div className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-muted">
             {products.map((product, i) => (
               <div
@@ -97,7 +96,6 @@ export default function ProductShowcase() {
             ))}
           </div>
 
-          {/* Product grid */}
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             {products.map((product, i) => (
               <button

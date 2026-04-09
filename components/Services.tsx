@@ -1,8 +1,8 @@
 const steps = [
   { num: "01", title: "Du velger", text: "Fortell oss hvilke produkter og mengder du trenger." },
   { num: "02", title: "Vi designer", text: "Vi tilpasser designet med logo og farger — gratis." },
-  { num: "03", title: "Vi produserer", text: "Alt trykkes og monteres i vart eget trykkeri." },
-  { num: "04", title: "Du mottar", text: "Levert til doren, klar til bruk." },
+  { num: "03", title: "Vi produserer", text: "Alt trykkes og monteres i vårt eget trykkeri." },
+  { num: "04", title: "Du mottar", text: "Levert til døren, klar til bruk." },
 ];
 
 export default function Services() {
@@ -10,10 +10,10 @@ export default function Services() {
     <section id="tjenester" className="py-20 bg-muted">
       <div className="max-w-5xl mx-auto px-4 sm:px-6">
         <h2 className="text-2xl sm:text-3xl font-bold text-foreground text-center">
-          Sa enkelt er det
+          Så enkelt er det
         </h2>
         <p className="mt-3 text-muted-foreground text-center max-w-xl mx-auto">
-          Fra ide til ferdig produkt — vi tar oss av alt.
+          Fra idé til ferdig produkt — vi tar oss av alt.
         </p>
 
         <div className="mt-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -34,7 +34,7 @@ export default function Services() {
             href="#kontakt"
             className="inline-flex items-center gap-2 bg-primary hover:bg-primary-dark text-white font-semibold px-8 py-4 rounded-xl transition-colors text-lg"
           >
-            Kom i gang — det er gratis a sporre
+            Kom i gang — det er gratis å spørre
           </a>
         </div>
       </div>

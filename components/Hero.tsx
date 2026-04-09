@@ -16,21 +16,21 @@ export default function Hero() {
 
       <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 text-center py-24">
         <p className="text-sm font-medium text-white/60 uppercase tracking-widest mb-6">
-          Totalleverandor siden 1898
+          Totalleverandør siden 1898
         </p>
 
         <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold leading-[1.05] tracking-tight text-white">
           Sett merkevaren din
           <br />
           <span className="relative inline-block mt-2">
-            <span className="relative z-10">i hendene pa kundene</span>
+            <span className="relative z-10">i hendene på kundene</span>
             <span className="absolute bottom-1 left-0 w-full h-3 bg-white/20 -skew-x-3 rounded" />
           </span>
         </h1>
 
         <p className="mt-8 text-lg sm:text-xl text-white/70 max-w-2xl mx-auto leading-relaxed">
-          Profileringsartikler som folk faktisk bruker. Penner, kopper, klaer,
-          bagger og mer — alt med ditt design, levert fra vart eget trykkeri.
+          Profileringsartikler som folk faktisk bruker. Penner, kopper, klær,
+          bagger og mer — alt med ditt design, levert fra vårt eget trykkeri.
         </p>
 
         <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">

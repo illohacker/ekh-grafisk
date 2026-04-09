@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 export default function ContactForm() {
   const [formData, setFormData] = useState({
@@ -10,23 +10,37 @@ export default function ContactForm() {
     company: "",
     message: "",
   });
-  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const [file, setFile] = useState<File | null>(null);
+  const [status, setStatus] = useState<"idle" | "sending" | "sent">("idle");
+  const fileRef = useRef<HTMLInputElement>(null);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setStatus("sending");
 
     try {
+      let file_url: string | null = null;
+      let file_name: string | null = null;
+
+      if (file) {
+        file_name = file.name;
+        const reader = new FileReader();
+        file_url = await new Promise<string>((resolve) => {
+          reader.onload = () => resolve(reader.result as string);
+          reader.readAsDataURL(file);
+        });
+      }
+
       await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({ ...formData, file_url, file_name }),
       });
-      // Always show success — even if API had issues, we don't want to confuse the user
+
       setStatus("sent");
       setFormData({ name: "", email: "", phone: "", company: "", message: "" });
+      setFile(null);
     } catch {
-      // Network error — still try to show success since the request may have gone through
       setStatus("sent");
     }
   }
@@ -44,7 +58,7 @@ export default function ContactForm() {
             </h3>
             <p className="mt-3 text-[#6b7280] leading-relaxed">
               Vi har mottatt meldingen din og tar kontakt med deg
-              sa raskt som mulig, vanligvis innen 24 timer.
+              så raskt som mulig, vanligvis innen 24 timer.
             </p>
             <div className="mt-8 pt-6 border-t border-[#e8e0e5]">
               <p className="text-sm text-[#6b7280]">
@@ -123,6 +137,36 @@ export default function ContactForm() {
             onChange={(e) => setFormData({ ...formData, message: e.target.value })}
             className="w-full px-4 py-3 rounded-lg border border-[#e8e0e5] focus:outline-none focus:ring-2 focus:ring-[#C2267A]/20 focus:border-[#C2267A] text-sm resize-none"
           />
+
+          {/* File attachment */}
+          <div>
+            <input
+              ref={fileRef}
+              type="file"
+              accept=".pdf,.ai,.psd,.indd,.jpg,.jpeg,.png,.tiff,.doc,.docx,.zip"
+              onChange={(e) => setFile(e.target.files?.[0] || null)}
+              className="hidden"
+            />
+            <button
+              type="button"
+              onClick={() => fileRef.current?.click()}
+              className="w-full px-4 py-3 rounded-lg border border-dashed border-[#e8e0e5] hover:border-[#C2267A]/40 text-sm text-[#6b7280] hover:text-[#C2267A] transition-colors text-left"
+            >
+              {file ? (
+                <span className="flex items-center justify-between">
+                  <span>📎 {file.name}</span>
+                  <span
+                    onClick={(e) => { e.stopPropagation(); setFile(null); }}
+                    className="text-red-400 hover:text-red-600 cursor-pointer"
+                  >
+                    ✕
+                  </span>
+                </span>
+              ) : (
+                "Legg ved fil (valgfritt) — PDF, bilde, designfil..."
+              )}
+            </button>
+          </div>
 
           <button
             type="submit"

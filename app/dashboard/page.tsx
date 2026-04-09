@@ -11,10 +11,14 @@ type Lead = {
   phone: string | null;
   company: string | null;
   message: string;
+  file_url: string | null;
+  file_name: string | null;
   status: string;
   created_at: string;
   updated_at: string;
 };
+
+const ADMIN_KEY = "ekh-admin-2026";
 
 type Note = {
   id: string;
@@ -65,6 +69,21 @@ export default function Dashboard() {
     fetchLeads();
     if (selected?.id === id) {
       setSelected((prev) => prev ? { ...prev, status } : null);
+    }
+  }
+
+  async function deleteLead(id: string) {
+    if (!confirm("Er du sikker på at du vil slette denne kontakten? Denne handlingen kan ikke angres.")) return;
+    const res = await fetch("/api/leads", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id, admin_key: ADMIN_KEY }),
+    });
+    if (res.ok) {
+      setSelected(null);
+      fetchLeads();
+    } else {
+      alert("Kunne ikke slette. Kun admin har tilgang.");
     }
   }
 
@@ -218,6 +237,7 @@ export default function Dashboard() {
           lead={selected}
           onClose={() => setSelected(null)}
           onStatusChange={(status) => updateStatus(selected.id, status)}
+          onDelete={() => deleteLead(selected.id)}
           onLeadUpdated={fetchLeads}
         />
       )}
@@ -242,11 +262,13 @@ function LeadPanel({
   lead,
   onClose,
   onStatusChange,
+  onDelete,
   onLeadUpdated,
 }: {
   lead: Lead;
   onClose: () => void;
   onStatusChange: (status: string) => void;
+  onDelete: () => void;
   onLeadUpdated: () => void;
 }) {
   const [notes, setNotes] = useState<Note[]>([]);
@@ -344,6 +366,24 @@ function LeadPanel({
           </div>
         </div>
 
+        {/* File attachment */}
+        {lead.file_name && (
+          <div className="px-6 py-4 border-b border-[#e8e0e5]">
+            <label className="block text-xs font-medium text-[#6b7280] uppercase tracking-wider mb-2">
+              Vedlegg
+            </label>
+            <a
+              href={lead.file_url || "#"}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 bg-[#f8f5f7] rounded-lg px-4 py-3 text-sm text-[#C2267A] hover:bg-[#C2267A]/10 transition-colors border border-[#e8e0e5]"
+            >
+              <span>📎</span>
+              {lead.file_name}
+            </a>
+          </div>
+        )}
+
         {/* Notes */}
         <div className="px-6 py-4">
           <label className="block text-xs font-medium text-[#6b7280] uppercase tracking-wider mb-3">
@@ -371,7 +411,7 @@ function LeadPanel({
           {/* Notes list */}
           {notes.length === 0 ? (
             <p className="text-sm text-[#6b7280] text-center py-4">
-              Ingen notater enna.
+              Ingen notater ennå.
             </p>
           ) : (
             <div className="space-y-3">
@@ -391,6 +431,16 @@ function LeadPanel({
               ))}
             </div>
           )}
+
+          {/* Delete button */}
+          <div className="mt-8 pt-6 border-t border-[#e8e0e5]">
+            <button
+              onClick={onDelete}
+              className="w-full py-2.5 rounded-lg border border-red-200 text-red-600 text-sm font-medium hover:bg-red-50 transition-colors"
+            >
+              Slett denne kontakten
+            </button>
+          </div>
         </div>
       </div>
     </div>

@@ -1,6 +1,26 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSupabase } from "@/lib/supabase";
 
+async function sendTelegram(text: string) {
+  const token = process.env.TELEGRAM_BOT_TOKEN;
+  const chatId = process.env.TELEGRAM_CHAT_ID;
+  if (!token || !chatId) return;
+
+  try {
+    await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        chat_id: chatId,
+        text,
+        parse_mode: "HTML",
+      }),
+    });
+  } catch (e) {
+    console.error("Telegram error:", e);
+  }
+}
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -34,7 +54,25 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Send notification email (optional — only if Resend is configured)
+    // Send Telegram notification
+    const tgLines = [
+      `<b>Ny lead fra nettsiden!</b>`,
+      ``,
+      `<b>Navn:</b> ${name}`,
+      company ? `<b>Bedrift:</b> ${company}` : "",
+      `<b>E-post:</b> ${email}`,
+      phone ? `<b>Telefon:</b> ${phone}` : "",
+      ``,
+      `<b>Melding:</b>`,
+      message,
+      file_name ? `\n<b>Vedlegg:</b> ${file_name}` : "",
+      ``,
+      `<a href="https://ekh-grafisk.vercel.app/dashboard">Apne dashboard</a>`,
+    ].filter(Boolean).join("\n");
+
+    await sendTelegram(tgLines);
+
+    // Send notification email (optional)
     if (process.env.RESEND_API_KEY) {
       try {
         const { getResend } = await import("@/lib/resend");

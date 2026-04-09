@@ -45,6 +45,7 @@ export default function Dashboard() {
   const [selected, setSelected] = useState<Lead | null>(null);
   const [filter, setFilter] = useState("all");
   const [search, setSearch] = useState("");
+  const [tab, setTab] = useState<"leads" | "stats">("leads");
 
   const fetchLeads = useCallback(async () => {
     try {
@@ -123,13 +124,27 @@ export default function Dashboard() {
                 EKH Grafisk &mdash; Leads
               </h1>
             </div>
-            <div className="text-sm text-[#6b7280]">
-              {leads.length} totalt
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => setTab("leads")}
+                className={`text-sm font-medium px-3 py-1 rounded-lg transition-colors ${tab === "leads" ? "bg-[#C2267A] text-white" : "text-[#6b7280] hover:text-[#1a1a1a]"}`}
+              >
+                Leads ({leads.length})
+              </button>
+              <button
+                onClick={() => setTab("stats")}
+                className={`text-sm font-medium px-3 py-1 rounded-lg transition-colors ${tab === "stats" ? "bg-[#C2267A] text-white" : "text-[#6b7280] hover:text-[#1a1a1a]"}`}
+              >
+                Statistikk
+              </button>
             </div>
           </div>
         </header>
 
         <main className="p-6 max-w-7xl mx-auto">
+          {tab === "stats" && <StatsPanel />}
+
+          {tab === "leads" && <>
           {/* Stats */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             <StatCard label="Totalt" value={stats.total} accent="#C2267A" />
@@ -228,6 +243,7 @@ export default function Dashboard() {
               </div>
             )}
           </div>
+        </>}
         </main>
       </div>
 
@@ -441,6 +457,169 @@ function LeadPanel({
               Slett denne kontakten
             </button>
           </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Field helper ──
+
+// ── Stats Panel ──
+
+function StatsPanel() {
+  const [data, setData] = useState<{
+    totalViews: number;
+    totalLeads: number;
+    conversionRate: string;
+    utmSources: Record<string, number>;
+    dailyViews: Record<string, number>;
+    dailyLeads: Record<string, number>;
+    statusBreakdown: Record<string, number>;
+  } | null>(null);
+  const [days, setDays] = useState(30);
+
+  useEffect(() => {
+    fetch(`/api/analytics?days=${days}`)
+      .then((r) => r.json())
+      .then(setData)
+      .catch(() => setData(null));
+  }, [days]);
+
+  if (!data) return <div className="text-center text-[#6b7280] py-12">Laster statistikk...</div>;
+
+  const maxView = Math.max(...Object.values(data.dailyViews), 1);
+  const sortedDays = Object.keys(data.dailyViews).sort();
+  const last14 = sortedDays.slice(-14);
+
+  return (
+    <div className="space-y-6">
+      {/* Period selector */}
+      <div className="flex gap-2">
+        {[7, 14, 30].map((d) => (
+          <button
+            key={d}
+            onClick={() => setDays(d)}
+            className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+              days === d ? "bg-[#C2267A] text-white" : "bg-white border border-[#e8e0e5] text-[#6b7280]"
+            }`}
+          >
+            {d} dager
+          </button>
+        ))}
+      </div>
+
+      {/* KPI cards */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="bg-white rounded-xl p-5 border border-[#e8e0e5]">
+          <p className="text-3xl font-bold text-[#C2267A]">{data.totalViews}</p>
+          <p className="text-sm text-[#6b7280] mt-1">Sidevisninger</p>
+        </div>
+        <div className="bg-white rounded-xl p-5 border border-[#e8e0e5]">
+          <p className="text-3xl font-bold text-[#2563eb]">{data.totalLeads}</p>
+          <p className="text-sm text-[#6b7280] mt-1">Leads</p>
+        </div>
+        <div className="bg-white rounded-xl p-5 border border-[#e8e0e5]">
+          <p className="text-3xl font-bold text-[#16a34a]">{data.conversionRate}%</p>
+          <p className="text-sm text-[#6b7280] mt-1">Konverteringsrate</p>
+        </div>
+        <div className="bg-white rounded-xl p-5 border border-[#e8e0e5]">
+          <p className="text-3xl font-bold text-[#ca8a04]">{data.statusBreakdown?.won || 0}</p>
+          <p className="text-sm text-[#6b7280] mt-1">Vunnet</p>
+        </div>
+      </div>
+
+      {/* Daily views bar chart */}
+      <div className="bg-white rounded-xl p-6 border border-[#e8e0e5]">
+        <h3 className="font-semibold text-[#1a1a1a] mb-4">Daglige sidevisninger</h3>
+        {last14.length === 0 ? (
+          <p className="text-sm text-[#6b7280] text-center py-8">Ingen data ennå. Trafikk fra annonser vises her.</p>
+        ) : (
+          <div className="flex items-end gap-1 h-40">
+            {last14.map((day) => {
+              const count = data.dailyViews[day] || 0;
+              const height = Math.max((count / maxView) * 100, 4);
+              const leadCount = data.dailyLeads[day] || 0;
+              return (
+                <div key={day} className="flex-1 flex flex-col items-center gap-1">
+                  <span className="text-xs text-[#6b7280]">{count}</span>
+                  <div className="w-full flex flex-col gap-0.5" style={{ height: `${height}%` }}>
+                    <div className="flex-1 bg-[#C2267A]/20 rounded-t" />
+                    {leadCount > 0 && (
+                      <div className="bg-[#C2267A] rounded-b" style={{ height: `${(leadCount / count) * 100}%`, minHeight: 4 }} />
+                    )}
+                  </div>
+                  <span className="text-[10px] text-[#6b7280] -rotate-45">{day.slice(5)}</span>
+                </div>
+              );
+            })}
+          </div>
+        )}
+        <div className="flex items-center gap-4 mt-4 text-xs text-[#6b7280]">
+          <span className="flex items-center gap-1"><span className="w-3 h-3 bg-[#C2267A]/20 rounded" /> Visninger</span>
+          <span className="flex items-center gap-1"><span className="w-3 h-3 bg-[#C2267A] rounded" /> Leads</span>
+        </div>
+      </div>
+
+      {/* Traffic sources */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div className="bg-white rounded-xl p-6 border border-[#e8e0e5]">
+          <h3 className="font-semibold text-[#1a1a1a] mb-4">Trafikkkilder</h3>
+          {Object.keys(data.utmSources).length === 0 ? (
+            <p className="text-sm text-[#6b7280] text-center py-4">Ingen data ennå.</p>
+          ) : (
+            <div className="space-y-3">
+              {Object.entries(data.utmSources)
+                .sort(([, a], [, b]) => b - a)
+                .map(([source, count]) => (
+                  <div key={source} className="flex items-center justify-between">
+                    <span className="text-sm text-[#1a1a1a] font-medium">{source}</span>
+                    <div className="flex items-center gap-2">
+                      <div className="w-24 h-2 bg-[#f8f5f7] rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-[#C2267A] rounded-full"
+                          style={{ width: `${(count / data.totalViews) * 100}%` }}
+                        />
+                      </div>
+                      <span className="text-sm text-[#6b7280] w-8 text-right">{count}</span>
+                    </div>
+                  </div>
+                ))}
+            </div>
+          )}
+        </div>
+
+        <div className="bg-white rounded-xl p-6 border border-[#e8e0e5]">
+          <h3 className="font-semibold text-[#1a1a1a] mb-4">Lead-status</h3>
+          {Object.keys(data.statusBreakdown).length === 0 ? (
+            <p className="text-sm text-[#6b7280] text-center py-4">Ingen leads ennå.</p>
+          ) : (
+            <div className="space-y-3">
+              {Object.entries(data.statusBreakdown).map(([status, count]) => {
+                const conf = STATUS_CONFIG[status];
+                return (
+                  <div key={status} className="flex items-center justify-between">
+                    <span className={`text-sm font-medium ${conf?.color || "text-[#6b7280]"}`}>
+                      {conf?.label || status}
+                    </span>
+                    <span className="text-sm text-[#6b7280]">{count}</span>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Google Ads info */}
+      <div className="bg-white rounded-xl p-6 border border-[#e8e0e5]">
+        <h3 className="font-semibold text-[#1a1a1a] mb-2">Google Ads-kampanje</h3>
+        <p className="text-sm text-[#6b7280]">
+          Når Google Ads er aktivt, vil trafikk fra annonsene vises her med UTM-kilde &quot;google&quot;.
+          Bruk disse UTM-parametrene i annonsene:
+        </p>
+        <div className="mt-3 bg-[#f8f5f7] rounded-lg p-3 font-mono text-xs text-[#1a1a1a] break-all">
+          ?utm_source=google&amp;utm_medium=cpc&amp;utm_campaign=profileringsartikler
         </div>
       </div>
     </div>

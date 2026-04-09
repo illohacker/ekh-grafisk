@@ -4,10 +4,12 @@ import ProductShowcase from "@/components/ProductShowcase";
 import Services from "@/components/Services";
 import ContactForm from "@/components/ContactForm";
 import Footer from "@/components/Footer";
+import Analytics from "@/components/Analytics";
 
 export default function Home() {
   return (
     <>
+      <Analytics />
       <Header />
       <Hero />
       <ProductShowcase />

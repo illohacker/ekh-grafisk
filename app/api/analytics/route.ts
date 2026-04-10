@@ -7,6 +7,17 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { path, referrer, utm_source, utm_medium, utm_campaign } = body;
 
+    // Vercel-provided geolocation headers (free, no external API)
+    const h = request.headers;
+    const country = h.get("x-vercel-ip-country") || null;
+    const cityRaw = h.get("x-vercel-ip-city");
+    const city = cityRaw ? decodeURIComponent(cityRaw) : null;
+    const region = h.get("x-vercel-ip-country-region") || null;
+    const latRaw = h.get("x-vercel-ip-latitude");
+    const lonRaw = h.get("x-vercel-ip-longitude");
+    const latitude = latRaw ? parseFloat(latRaw) : null;
+    const longitude = lonRaw ? parseFloat(lonRaw) : null;
+
     try {
       const supabase = getSupabase();
       await supabase.from("page_views").insert({
@@ -15,6 +26,11 @@ export async function POST(request: NextRequest) {
         utm_source: utm_source || null,
         utm_medium: utm_medium || null,
         utm_campaign: utm_campaign || null,
+        country,
+        city,
+        region,
+        latitude,
+        longitude,
       });
     } catch {
       // Table may not exist yet — silently ignore
@@ -86,6 +102,40 @@ export async function GET(request: NextRequest) {
     statusBreakdown[l.status] = (statusBreakdown[l.status] || 0) + 1;
   }
 
+  // Location aggregation (city + country)
+  const locMap: Record<
+    string,
+    {
+      country: string | null;
+      city: string | null;
+      latitude: number | null;
+      longitude: number | null;
+      count: number;
+    }
+  > = {};
+  for (const v of allViews) {
+    if (!v.city && !v.country) continue;
+    const key = `${v.country || "?"}|${v.city || "?"}`;
+    if (!locMap[key]) {
+      locMap[key] = {
+        country: v.country ?? null,
+        city: v.city ?? null,
+        latitude: v.latitude != null ? Number(v.latitude) : null,
+        longitude: v.longitude != null ? Number(v.longitude) : null,
+        count: 0,
+      };
+    }
+    locMap[key].count += 1;
+  }
+  const locations = Object.values(locMap).sort((a, b) => b.count - a.count);
+
+  // Country breakdown
+  const countries: Record<string, number> = {};
+  for (const v of allViews) {
+    const c = v.country || "Ukjent";
+    countries[c] = (countries[c] || 0) + 1;
+  }
+
   return NextResponse.json({
     totalViews,
     totalLeads,
@@ -94,5 +144,7 @@ export async function GET(request: NextRequest) {
     dailyViews,
     dailyLeads,
     statusBreakdown,
+    locations,
+    countries,
   });
 }

@@ -1,6 +1,16 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import dynamic from "next/dynamic";
+
+const VisitsMap = dynamic(() => import("@/components/VisitsMap"), {
+  ssr: false,
+  loading: () => (
+    <div className="h-[420px] w-full rounded-xl bg-[#f8f5f7] flex items-center justify-center text-sm text-[#6b7280]">
+      Laster kart...
+    </div>
+  ),
+});
 
 // ── Types ──
 
@@ -467,6 +477,14 @@ function LeadPanel({
 
 // ── Stats Panel ──
 
+type VisitLocation = {
+  country: string | null;
+  city: string | null;
+  latitude: number | null;
+  longitude: number | null;
+  count: number;
+};
+
 function StatsPanel() {
   const [data, setData] = useState<{
     totalViews: number;
@@ -476,6 +494,8 @@ function StatsPanel() {
     dailyViews: Record<string, number>;
     dailyLeads: Record<string, number>;
     statusBreakdown: Record<string, number>;
+    locations: VisitLocation[];
+    countries: Record<string, number>;
   } | null>(null);
   const [days, setDays] = useState(30);
 
@@ -559,6 +579,90 @@ function StatsPanel() {
           <span className="flex items-center gap-1"><span className="w-3 h-3 bg-[#C2267A]/20 rounded" /> Visninger</span>
           <span className="flex items-center gap-1"><span className="w-3 h-3 bg-[#C2267A] rounded" /> Leads</span>
         </div>
+      </div>
+
+      {/* Geolocation: map + list */}
+      <div className="bg-white rounded-xl p-6 border border-[#e8e0e5]">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="font-semibold text-[#1a1a1a]">Hvor kommer besøkene fra?</h3>
+          <span className="text-xs text-[#6b7280]">
+            {data.locations.length} {data.locations.length === 1 ? "sted" : "steder"}
+          </span>
+        </div>
+
+        {data.locations.length === 0 ? (
+          <p className="text-sm text-[#6b7280] text-center py-8">
+            Ingen lokasjonsdata ennå. Lokasjon registreres automatisk fra nye besøk.
+          </p>
+        ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            {/* Map */}
+            <div className="lg:col-span-2">
+              <VisitsMap locations={data.locations} />
+            </div>
+
+            {/* List */}
+            <div className="space-y-4">
+              {/* Countries */}
+              <div>
+                <h4 className="text-xs font-medium text-[#6b7280] uppercase tracking-wider mb-2">
+                  Land
+                </h4>
+                <div className="space-y-1.5">
+                  {Object.entries(data.countries)
+                    .sort(([, a], [, b]) => b - a)
+                    .slice(0, 6)
+                    .map(([country, count]) => (
+                      <div
+                        key={country}
+                        className="flex items-center justify-between text-sm"
+                      >
+                        <span className="text-[#1a1a1a] font-medium">{country}</span>
+                        <span className="text-[#6b7280]">{count}</span>
+                      </div>
+                    ))}
+                </div>
+              </div>
+
+              {/* Cities */}
+              <div>
+                <h4 className="text-xs font-medium text-[#6b7280] uppercase tracking-wider mb-2">
+                  Byer
+                </h4>
+                <div className="space-y-1.5 max-h-64 overflow-y-auto pr-1">
+                  {data.locations.slice(0, 20).map((loc, i) => (
+                    <div
+                      key={`${loc.country}-${loc.city}-${i}`}
+                      className="flex items-center justify-between text-sm"
+                    >
+                      <span className="text-[#1a1a1a] truncate pr-2">
+                        {loc.city || "Ukjent by"}
+                        {loc.country ? (
+                          <span className="text-[#6b7280]"> · {loc.country}</span>
+                        ) : null}
+                      </span>
+                      <div className="flex items-center gap-2 flex-shrink-0">
+                        <div className="w-16 h-1.5 bg-[#f8f5f7] rounded-full overflow-hidden">
+                          <div
+                            className="h-full bg-[#C2267A] rounded-full"
+                            style={{
+                              width: `${
+                                (loc.count /
+                                  Math.max(...data.locations.map((l) => l.count), 1)) *
+                                100
+                              }%`,
+                            }}
+                          />
+                        </div>
+                        <span className="text-[#6b7280] w-6 text-right">{loc.count}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Traffic sources */}
